@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addExpense } from '../actions/expenses';
+import { startAddExpense } from '../actions/expenses';
 import ExpenseForm from './ExpenseForm';
 
 export class AddExpense extends Component {
   onSubmit = expense => {
-    const { addExpense, history: { push } } = this.props;
-    addExpense(expense);
+    const { startAddExpense, history: { push } } = this.props;
+    startAddExpense(expense);
     push('/');
   };
 
@@ -20,4 +20,4 @@ export class AddExpense extends Component {
   }
 }
 
-export default connect(null, { addExpense })(AddExpense);
+export default connect(null, { startAddExpense })(AddExpense);
