@@ -9,7 +9,8 @@ import {
   removeExpense,
   setExpenses,
   startSetExpenses,
-  startRemoveExpense
+  startRemoveExpense,
+  startEditExpense
 } from '../../actions/expenses';
 
 const createMockStore = configureMockStore([thunk]);
@@ -172,6 +173,30 @@ test('should remove an expense from firebase', done => {
     })
     .then(snapshot => {
       expect(snapshot.val()).toBeFalsy();
+      done();
+    });
+});
+
+test('should edit expenses from firebase', done => {
+  const store = createMockStore({});
+  const id = expenses[0].id;
+  const updates = { description: 'Chewing gum', note: 'Good for my teeth' };
+
+  store
+    .dispatch(startEditExpense(id, updates))
+    .then(() => {
+      const actions = store.getActions();
+      expect(actions[0]).toEqual({
+        type: 'EDIT_EXPENSE',
+        id,
+        updates
+      });
+      return database.ref(`expenses/${id}`).once('value');
+    })
+    .then(snapshot => {
+      const expense = snapshot.val();
+      expect(expense.description).toBe(updates.description);
+      expect(expense.note).toBe(updates.note);
       done();
     });
 });
